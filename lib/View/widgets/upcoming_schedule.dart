@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthful/View/theme/light_color.dart';
 
 class UpcomingSchedule extends StatelessWidget {
   UpcomingSchedule({super.key});
@@ -88,23 +89,24 @@ class UpcomingSchedule extends StatelessWidget {
           Container(
             height: MediaQuery.of(context).size.height * 0.57,
             padding: const EdgeInsets.symmetric(horizontal: 2),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF4F6FA),
-              borderRadius: BorderRadius.circular(10),
-            ),
             child: ListView.builder(
                 itemCount: doctorData.length,
                 itemBuilder: (context, index) {
                   return Container(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    margin: const EdgeInsets.symmetric(vertical: 5),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: const [
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      boxShadow: <BoxShadow>[
                         BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          spreadRadius: 2,
+                          offset: const Offset(4, 4),
+                          blurRadius: 10,
+                          color: LightColor.grey.withOpacity(.2),
+                        ),
+                        BoxShadow(
+                          offset: const Offset(-3, 0),
+                          blurRadius: 15,
+                          color: LightColor.grey.withOpacity(.1),
                         )
                       ],
                     ),

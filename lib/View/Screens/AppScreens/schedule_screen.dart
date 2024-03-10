@@ -70,7 +70,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                           margin: const EdgeInsets.symmetric(horizontal: 5),
                           decoration: BoxDecoration(
                             color: _buttonIndex == index ? LightColor.marron : LightColor.grey.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                offset: const Offset(4, 4),
+                                blurRadius: 5,
+                                color: LightColor.grey.withOpacity(.2),
+                              ),
+                              BoxShadow(
+                                offset: const Offset(-3, 0),
+                                blurRadius: 5,
+                                color: LightColor.grey.withOpacity(.1),
+                              )
+                            ],
                           ),
                           child: Text(
                             scheduleName[index].toString(),

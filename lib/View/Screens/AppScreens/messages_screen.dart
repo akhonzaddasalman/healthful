@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:healthful/View/Screens/AppScreens/chat_screen.dart';
+import 'package:healthful/View/theme/light_color.dart';
 
 // ignore: must_be_immutable
 class MessagesScreen extends StatefulWidget {
@@ -100,15 +101,22 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 12),
                   width: 65,
                   height: 65,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    boxShadow: [
+                    shape: BoxShape.circle,
+                    boxShadow: <BoxShadow>[
                       BoxShadow(
-                        color: Colors.black12,
-                        spreadRadius: 2,
+                        offset: const Offset(4, 4),
                         blurRadius: 10,
+                        spreadRadius: 2,
+                        color: LightColor.grey.withOpacity(.2),
                       ),
+                      BoxShadow(
+                        offset: const Offset(-3, 0),
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                        color: LightColor.grey.withOpacity(.1),
+                      )
                     ],
                   ),
                   child: Stack(
@@ -129,16 +137,18 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       ),
                       Positioned(
                         // Corrected positioning
-                        right: 4,
-                        top: 4,
+                        right: 3,
+                        top: 6,
                         child: Container(
-                          height: 18,
-                          width: 18,
+                          height: 14,
+                          width: 14,
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             shape: BoxShape.circle,
                           ),
                           child: Container(
+                            height: 12,
+                            width: 12,
                             decoration: const BoxDecoration(
                               color: Colors.green,
                               shape: BoxShape.circle,
@@ -168,43 +178,62 @@ class _MessagesScreenState extends State<MessagesScreen> {
             itemCount: imgs.length, // Corrected itemCount
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              return ListTile(
-                minVerticalPadding: 10,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ChatScreen(),
+              return Container(
+                margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                      offset: const Offset(4, 4),
+                      blurRadius: 10,
+                      color: LightColor.grey.withOpacity(.2),
                     ),
-                  );
-                },
-                leading: CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage(
-                    "${imgs[index]}",
-                  ),
+                    BoxShadow(
+                      offset: const Offset(-3, 0),
+                      blurRadius: 15,
+                      color: LightColor.grey.withOpacity(.1),
+                    )
+                  ],
                 ),
-                title: const Text(
-                  "Dr. Smith",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                child: ListTile(
+                  minVerticalPadding: 10,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ChatScreen(),
+                      ),
+                    );
+                  },
+                  leading: CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage(
+                      "${imgs[index]}",
+                    ),
                   ),
-                ),
-                subtitle: const Text(
-                  "Hey Doc, Are you there?",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black54,
+                  title: const Text(
+                    "Dr. Smith",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                trailing: const Text(
-                  "1:30",
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.black54,
+                  subtitle: const Text(
+                    "Hey Doc, Are you there?",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  trailing: const Text(
+                    "1:30",
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black54,
+                    ),
                   ),
                 ),
               );

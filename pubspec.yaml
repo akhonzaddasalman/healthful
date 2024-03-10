@@ -16,6 +16,7 @@ dependencies:
   google_fonts: ^6.2.1
   provider: ^6.1.2
   custom_clippers: ^2.0.0
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
