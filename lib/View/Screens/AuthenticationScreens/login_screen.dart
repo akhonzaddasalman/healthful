@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthful/View/Components/build_buttons.dart';
-import 'package:healthful/View/Screens/AppScreens/home_page.dart';
+import 'package:healthful/View/Screens/AppScreens/home_screen.dart';
 import 'package:healthful/View/Screens/AuthenticationScreens/signup_screen.dart';
 import 'package:healthful/View/Utils/next_screen.dart';
 import 'package:healthful/View/theme/light_color.dart';
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 60,
                     width: double.infinity,
                     child: buildRegisterButton(() {
-                      nextScreen(context, const HomePage());
+                      nextScreen(context, const HomeScreen());
                     }, "Login", textStyle: GoogleFonts.poppins(color: LightColor.white, fontSize: 16, fontWeight: FontWeight.w600))),
                 const SizedBox(height: 20),
                 Row(

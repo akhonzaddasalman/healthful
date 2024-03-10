@@ -16,8 +16,8 @@ class LightColor {
   static const Color lightOrange = Color(0xfffa9881);
 
   static const Color marron = Color(0xff800000);
-  static const Color marronLight = Color(0xffff8080);
-  static const Color marronExtraLight = Color(0xffffb9b9);
+  static const Color marronLight = Color(0xffff9d9d);
+  static const Color marronExtraLight = Color(0xffffcece);
 
   static const Color grey = Color(0xffb8bfce);
 

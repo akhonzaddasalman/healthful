@@ -9,14 +9,14 @@ import 'package:healthful/View/theme/light_color.dart';
 import 'package:healthful/View/theme/text_styles.dart';
 import 'package:healthful/View/theme/theme.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MainScreenState extends State<MainScreen> {
   late List<DoctorModel> doctorDataList;
   @override
   void initState() {
