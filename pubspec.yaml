@@ -17,6 +17,7 @@ dependencies:
   provider: ^6.1.2
   custom_clippers: ^2.0.0
   image_picker: ^1.0.7
+  autocomplete_textfield: ^2.0.1
 
 dev_dependencies:
   flutter_test:

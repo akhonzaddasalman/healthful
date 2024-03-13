@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthful/View/Screens/AppScreens/edit_profile_screen.dart';
+import 'package:healthful/View/Screens/AppScreens/symptoms_checker_screen.dart';
 import 'package:healthful/View/Utils/next_screen.dart';
 import 'package:healthful/View/theme/light_color.dart';
 import 'package:healthful/View/widgets/listTile_widget.dart';
@@ -72,6 +73,16 @@ class SettingsScreen extends StatelessWidget {
                 trailingIcon: Icons.arrow_forward_ios_rounded,
                 boxColor: Colors.deepPurple.shade100,
                 iconColor: LightColor.marron),
+            const SizedBox(height: 10),
+            CustomListTile(
+                leadingIcon: Icons.medical_information,
+                title: "Symptoms Checker",
+                onTap: () {
+                  nextScreen(context, SymptomCheckerScreen());
+                },
+                trailingIcon: Icons.arrow_forward_ios_rounded,
+                boxColor: Colors.cyanAccent.shade100,
+                iconColor: Colors.cyan),
             const SizedBox(height: 10),
             CustomListTile(
                 leadingIcon: Icons.settings_suggest_outlined,

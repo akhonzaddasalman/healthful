@@ -10,4 +10,4 @@
 6. Simple symptom checker : Integrate a symptom checker tool that allows users to input symptoms 
    and receive potential diagnoses or recommendations for further action.
 7. Health tip
-   bonus feature : profile screen
+ //  bonus feature : profile screen

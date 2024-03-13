@@ -1,13 +1,15 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:healthful/Model/dactor_model.dart';
+import 'package:healthful/Controller/Provider/home_screen_provider.dart';
 import 'package:healthful/Model/data.dart';
+import 'package:healthful/Model/doctor_model.dart';
 import 'package:healthful/View/Screens/AppScreens/detail_page.dart';
 import 'package:healthful/View/theme/extention.dart';
 import 'package:healthful/View/theme/light_color.dart';
 import 'package:healthful/View/theme/text_styles.dart';
 import 'package:healthful/View/theme/theme.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -26,22 +28,16 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final homeProvider = context.read<HomeScreenProvider>();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        leading: const Icon(
-          Icons.short_text,
-          size: 30,
-          color: Colors.black,
-        ),
-        actions: <Widget>[
-          const Icon(
-            Icons.notifications_none,
-            size: 30,
-            color: LightColor.grey,
-          ),
-          ClipRRect(
+        leading: InkWell(
+          onTap: () {
+            homeProvider.changeTab(3);
+          },
+          child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(13)),
             child: Container(
               // height: 40,
@@ -52,6 +48,16 @@ class _MainScreenState extends State<MainScreen> {
               child: Image.asset("assets/user.png", fit: BoxFit.fill),
             ),
           ).p(8),
+        ),
+        actions: const <Widget>[
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Icon(
+              Icons.notifications_none,
+              size: 30,
+              color: LightColor.grey,
+            ),
+          ),
         ],
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

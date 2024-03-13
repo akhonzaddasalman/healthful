@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:healthful/Model/dactor_model.dart';
+import 'package:healthful/Model/doctor_model.dart';
 import 'package:healthful/View/Components/build_buttons.dart';
 import 'package:healthful/View/theme/extention.dart';
 import 'package:healthful/View/theme/light_color.dart';

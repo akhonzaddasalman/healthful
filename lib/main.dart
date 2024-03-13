@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:healthful/Controller/Provider/home_screen_provider.dart';
+import 'package:healthful/Controller/Provider/symptoms_provider.dart';
 import 'package:healthful/View/Screens/AppScreens/home_screen.dart';
 import 'package:healthful/View/Screens/AuthenticationScreens/login_screen.dart';
 import 'package:healthful/View/Screens/AuthenticationScreens/signup_screen.dart';
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: ((context) => HomeScreenProvider())),
+        ChangeNotifierProvider(create: ((context) => SymptomProvider())),
       ],
       child: Builder(builder: (context) {
         return MaterialApp(
