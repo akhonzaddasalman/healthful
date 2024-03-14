@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:healthful/Controller/Provider/home_screen_provider.dart';
+import 'package:healthful/View/Screens/AppScreens/SettingsScreen/settings_screen.dart';
 import 'package:healthful/View/Screens/AppScreens/main_screen.dart';
 import 'package:healthful/View/Screens/AppScreens/messages_screen.dart';
 import 'package:healthful/View/Screens/AppScreens/schedule_screen.dart';
-import 'package:healthful/View/Screens/AppScreens/settings_screen.dart';
 import 'package:healthful/View/theme/light_color.dart';
 import 'package:provider/provider.dart';
 

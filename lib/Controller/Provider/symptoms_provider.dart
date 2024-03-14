@@ -104,23 +104,42 @@ class SymptomProvider extends ChangeNotifier {
       ],
     };
 
+    // [Symptom('Severe abdominal pain'), Symptom('Bloody stool')]: [
+    // Diagnosis('Gastrointestinal bleeding', 'Go to the emergency room immediately for evaluation and treatment.'),
+    // Diagnosis('Inflammatory bowel disease', 'See a gastroenterologist for further evaluation and treatment.'),
+    // ],
     // Find potential diagnoses based on selected symptoms
     _diagnoses.clear(); // Clear previous diagnoses
     //print('This is add data ${symptomData}');
-
-    try {
-      for (var symptomsList in symptomData.keys) {
-        print('This is add data 1');
-
-        if (_selectedSymptoms.every((symptom) => symptomsList.contains(symptom))) {
-          print('This is add data  ${selectedSymptoms.first.name.toString()}');
-          _diagnoses.addAll(symptomData[symptomsList]!);
+    for (var entry in symptomData.entries) {
+      var matched = false;
+      for (var symptom in entry.key) {
+        print('This is add data ');
+        if (selectedSymptoms.first.name == symptom.name) {
+          matched = true;
+          print('Data matched ${selectedSymptoms[0].name} = ${symptom.name}');
+          break;
         }
       }
-    } catch (error) {
-      print('Error during symptom check: $error');
-      // Optionally handle the error more gracefully, e.g., by providing a user-friendly message
+      if (matched) {
+        _diagnoses.addAll(entry.value);
+        print('This is add data 2 ${diagnoses?[0].recommendation.toString()} ${diagnoses?[1].recommendation.toString()}');
+      }
     }
+
+    // try {
+    //   for (var symptomsList in symptomData.keys) {
+    //     print('This is add data 1');
+    //
+    //     if (selectedSymptoms.every((symptom) => symptomsList.contains(symptom))) {
+    //       print('This is add data  ${selectedSymptoms.first.name.toString()}');
+    //       _diagnoses.addAll(symptomData[symptomsList]!);
+    //     }
+    //   }
+    // } catch (error) {
+    //   print('Error during symptom check: $error');
+    //   // Optionally handle the error more gracefully, e.g., by providing a user-friendly message
+    // }
 
     notifyListeners();
   }

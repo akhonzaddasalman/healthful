@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:healthful/Controller/Provider/symptoms_provider.dart';
@@ -16,6 +18,21 @@ class SymptomCheckerScreen extends StatefulWidget {
 
 class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
   GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
+  String selectedImage = '';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void selectRandomImage() {
+    final random = Random();
+    final index = random.nextInt(images.length);
+    setState(() {
+      selectedImage = images[index];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,6 +84,8 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                       symptomProvider.symptomController.text = item;
 
                       symptomProvider.addSymptom(Symptom(item));
+                      selectRandomImage();
+                      symptomProvider.checkSymptoms();
                     });
                   },
                   itemBuilder: (context, item) {
@@ -81,42 +100,90 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
               ),
             ),
             const SizedBox(height: 10.0),
-            Expanded(
-              child: ListView.builder(
-                  itemCount: symptoms.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        symptomProvider.addSymptom(symptoms[index]);
-                        symptomProvider.checkSymptoms();
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30),
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: LightColor.white,
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                              offset: const Offset(4, 4),
-                              blurRadius: 10,
-                              color: LightColor.grey.withOpacity(.2),
-                            ),
-                            BoxShadow(
-                              offset: const Offset(-3, 0),
-                              blurRadius: 15,
-                              color: LightColor.grey.withOpacity(.1),
-                            )
-                          ],
-                        ),
-                        child: Text(
-                          symptoms[index].name.toString(),
-                          style: TextStyles.bodySm.black.bold,
-                        ),
+            symptomProvider.diagnoses!.isNotEmpty
+                ? Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: LightColor.white,
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            offset: const Offset(4, 4),
+                            blurRadius: 10,
+                            color: LightColor.grey.withOpacity(.2),
+                          ),
+                          BoxShadow(
+                            offset: const Offset(-3, 0),
+                            blurRadius: 15,
+                            color: LightColor.grey.withOpacity(.1),
+                          )
+                        ],
                       ),
-                    );
-                  }),
-            ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: Image.asset(selectedImage)),
+                          Text(
+                            " It's seem like ${symptomProvider.diagnoses!.first.condition.toString()}",
+                            style: TextStyles.bodySm.black.bold,
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            symptomProvider.diagnoses!.first.recommendation.toString(),
+                            style: TextStyles.bodySm.subTitleColor.black,
+                          ),
+                          SizedBox(
+                            height: 30,
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                        itemCount: symptoms.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              symptomProvider.addSymptom(symptoms[index]);
+                              selectRandomImage();
+                              print(symptoms[index].name.toString());
+                              Future.delayed(const Duration(seconds: 4), () {
+                                symptomProvider.checkSymptoms();
+                              });
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30),
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: LightColor.white,
+                                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                boxShadow: <BoxShadow>[
+                                  BoxShadow(
+                                    offset: const Offset(4, 4),
+                                    blurRadius: 10,
+                                    color: LightColor.grey.withOpacity(.2),
+                                  ),
+                                  BoxShadow(
+                                    offset: const Offset(-3, 0),
+                                    blurRadius: 15,
+                                    color: LightColor.grey.withOpacity(.1),
+                                  )
+                                ],
+                              ),
+                              child: Text(
+                                symptoms[index].name.toString(),
+                                style: TextStyles.bodySm.black.bold,
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
             const SizedBox(height: 10.0),
             // for (var symptom in symptoms) SymptomTile(symptom: symptom),
             // const SizedBox(height: 20.0),
@@ -133,6 +200,14 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
       }),
     );
   }
+
+  final List<String> images = [
+    'assets/doctor_1.png',
+    'assets/doctor_3.png',
+    'assets/doctor_4.png',
+    'assets/doctor.png',
+    'assets/doctor_face.png',
+  ];
 
   // List of predefined symptoms
   List<Symptom> symptoms = [

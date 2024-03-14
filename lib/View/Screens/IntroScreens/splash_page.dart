@@ -15,7 +15,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 5), () {
       nextScreenRemoveUntil(context, "/signIn");
     });
   }
@@ -30,7 +30,7 @@ class _SplashPageState extends State<SplashPage> {
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                  "assets/doctor_face.jpg",
+                  "assets/doctor_face.png",
                 ),
                 fit: BoxFit.fill,
               ),
@@ -55,10 +55,6 @@ class _SplashPageState extends State<SplashPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              const Expanded(
-                flex: 2,
-                child: SizedBox(),
-              ),
               Image.asset(
                 "assets/logo.png",
                 //color: Colors.white,
@@ -74,10 +70,6 @@ class _SplashPageState extends State<SplashPage> {
               Text(
                 "Empowering Health, One Tap at a Time",
                 style: TextStyles.bodySm.black.bold,
-              ),
-              const Expanded(
-                flex: 7,
-                child: SizedBox(),
               ),
             ],
           ).alignTopCenter,
