@@ -126,12 +126,15 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(child: Image.asset(selectedImage)),
+                          SizedBox(
+                            height: 10,
+                          ),
                           Text(
                             " It's seem like ${symptomProvider.diagnoses!.first.condition.toString()}",
                             style: TextStyles.bodySm.black.bold,
                           ),
                           SizedBox(
-                            height: 10,
+                            height: 5,
                           ),
                           Text(
                             symptomProvider.diagnoses!.first.recommendation.toString(),
@@ -152,10 +155,8 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
                             onTap: () {
                               symptomProvider.addSymptom(symptoms[index]);
                               selectRandomImage();
-                              print(symptoms[index].name.toString());
-                              Future.delayed(const Duration(seconds: 4), () {
-                                symptomProvider.checkSymptoms();
-                              });
+                              symptomProvider.symptomController.text = symptoms[index].name;
+                              symptomProvider.checkSymptoms();
                             },
                             child: Container(
                               margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30),

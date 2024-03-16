@@ -23,7 +23,7 @@ class HealthTipsScreen extends StatelessWidget {
 
   Widget _buildCategoryItem(String category, List<String> tips) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: LightColor.white,
         borderRadius: const BorderRadius.all(Radius.circular(10)),

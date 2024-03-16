@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCHuicBihW_wl-5bkEQxZ6R9ANeHPGmAe8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>842119901350</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.healthful.healthful</string>
+	<key>PROJECT_ID</key>
+	<string>healthful-886c2</string>
+	<key>STORAGE_BUCKET</key>
+	<string>healthful-886c2.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:842119901350:ios:496ca3a9a38a162c3c0467</string>
+	<key>DATABASE_URL</key>
+	<string>https://healthful-886c2-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

@@ -143,4 +143,18 @@ class SymptomProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  // final SymptomateService _symptomateService = SymptomateService();
+  // Map<String, dynamic> _symptoms;
+  //
+  // Map<String, dynamic> get symptoms => _symptoms;
+  //
+  // Future<void> fetchSymptoms() async {
+  //   try {
+  //     _symptoms = await _symptomateService.getSymptoms();
+  //     notifyListeners();
+  //   } catch (e) {
+  //     print('Error fetching symptoms: $e');
+  //   }
+  // }
 }

@@ -5,6 +5,8 @@ import 'package:healthful/Controller/Provider/home_screen_provider.dart';
 import 'package:healthful/Model/data.dart';
 import 'package:healthful/Model/doctor_model.dart';
 import 'package:healthful/View/Screens/AppScreens/detail_page.dart';
+import 'package:healthful/View/Screens/AppScreens/seeAllCategory_screen.dart';
+import 'package:healthful/View/Utils/next_screen.dart';
 import 'package:healthful/View/theme/extention.dart';
 import 'package:healthful/View/theme/light_color.dart';
 import 'package:healthful/View/theme/text_styles.dart';
@@ -130,7 +132,9 @@ class _MainScreenState extends State<MainScreen> {
               Text(
                 "See All",
                 style: TextStyles.titleNormal.copyWith(color: Theme.of(context).primaryColor),
-              ).p(8).ripple(() {})
+              ).p(8).ripple(() {
+                nextScreen(context, const AllCategoryScreen());
+              })
             ],
           ),
         ),
@@ -225,7 +229,9 @@ class _MainScreenState extends State<MainScreen> {
                     Icons.sort,
                     color: Theme.of(context).primaryColor,
                   ),
-                  onPressed: () {})
+                  onPressed: () {
+                    _sortDoctors();
+                  })
               // .p(12).ripple(() {}, borderRadius: BorderRadius.all(Radius.circular(20))),
             ],
           ).hP16,
@@ -233,6 +239,19 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
     );
+  }
+
+  bool _sortByName = false;
+
+  void _sortDoctors() {
+    setState(() {
+      if (_sortByName) {
+        doctorDataList.sort((a, b) => a.name.compareTo(b.name));
+      } else {
+        doctorDataList.sort((a, b) => a.type.compareTo(b.type));
+      }
+      _sortByName = !_sortByName;
+    });
   }
 
   Widget getdoctorWidgetList() {

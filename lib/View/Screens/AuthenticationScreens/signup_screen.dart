@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:healthful/Controller/Functions/sign_up_function.dart';
+import 'package:healthful/Controller/Provider/authentication_provider.dart';
 import 'package:healthful/View/Components/build_buttons.dart';
-import 'package:healthful/View/Screens/AuthenticationScreens/login_screen.dart';
-import 'package:healthful/View/Utils/next_screen.dart';
 import 'package:healthful/View/theme/light_color.dart';
 import 'package:healthful/View/widgets/text_field.dart';
+import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -16,8 +17,16 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   bool passToggle = true;
+
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final phoneController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.read<AuthProvider>();
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -30,21 +39,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   "assets/signup.png",
                   scale: 5,
                 ),
-                const RoundedTextField(
+                RoundedTextField(
+                  controller: nameController,
                   hint: 'Enter Name',
                   color: Colors.transparent,
                   borderColor: Colors.transparent,
                   pIcon: Icon(Icons.person),
                 ),
                 const SizedBox(height: 10),
-                const RoundedTextField(
+                RoundedTextField(
+                  controller: emailController,
                   hint: 'Email Address',
                   color: Colors.transparent,
                   borderColor: Colors.transparent,
                   pIcon: Icon(Icons.email),
                 ),
                 const SizedBox(height: 10),
-                const RoundedTextField(
+                RoundedTextField(
+                  controller: phoneController,
                   hint: 'Phone Number',
                   color: Colors.transparent,
                   borderColor: Colors.transparent,
@@ -52,6 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 10),
                 RoundedTextField(
+                  controller: passwordController,
                   obscureText: passToggle,
                   hint: 'Password',
                   color: Colors.transparent,
@@ -73,8 +86,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(
                     height: 60,
                     width: double.infinity,
-                    child: buildRegisterButton(() {
-                      nextScreen(context, LoginScreen());
+                    child: buildRegisterButton(() async {
+                      authProvider.setLoading(true);
+                      await handleSignUp(context, "", nameController.text, phoneController.text, emailController.text, passwordController.text);
+                      authProvider.setLoading(false);
                     }, "Sign Up", textStyle: GoogleFonts.poppins(color: LightColor.white, fontSize: 16, fontWeight: FontWeight.w600))),
                 const SizedBox(height: 20),
                 Row(

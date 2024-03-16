@@ -18,6 +18,14 @@ dependencies:
   custom_clippers: ^2.0.0
   image_picker: ^1.0.7
   autocomplete_textfield: ^2.0.1
+  http: ^1.2.1
+  firebase_core: ^2.27.1
+  google_sign_in: ^6.1.4
+  firebase_auth: ^4.17.4
+  cloud_firestore: ^4.8.5
+  firebase_storage: ^11.2.6
+  shared_preferences: ^2.2.2
+  connectivity_plus: ^5.0.2
 
 dev_dependencies:
   flutter_test:

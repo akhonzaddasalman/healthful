@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:healthful/View/Screens/AppScreens/SettingsScreen/aboutUs_screen.dart';
 import 'package:healthful/View/Screens/AppScreens/SettingsScreen/edit_profile_screen.dart';
 import 'package:healthful/View/Screens/AppScreens/SettingsScreen/healthtips_screen.dart';
 import 'package:healthful/View/Screens/AppScreens/SettingsScreen/medication_reminder_screen.dart';
@@ -75,8 +76,8 @@ class SettingsScreen extends StatelessWidget {
                   nextScreen(context, const MedicationReminderPage());
                 },
                 trailingIcon: Icons.arrow_forward_ios_rounded,
-                boxColor: Colors.deepPurple.shade100,
-                iconColor: LightColor.marron),
+                boxColor: Colors.purple.shade100,
+                iconColor: Colors.purple),
             const SizedBox(height: 10),
             CustomListTile(
                 leadingIcon: Icons.medical_information,
@@ -98,28 +99,30 @@ class SettingsScreen extends StatelessWidget {
                 boxColor: Colors.greenAccent.shade100,
                 iconColor: Colors.green),
             const SizedBox(height: 10),
-            CustomListTile(
-                leadingIcon: Icons.settings_suggest_outlined,
-                title: "General Settings",
-                onTap: () {},
-                trailingIcon: Icons.arrow_forward_ios_rounded,
-                boxColor: Colors.orange.shade100,
-                iconColor: Colors.orange),
-            const SizedBox(height: 10),
+            // CustomListTile(
+            //     leadingIcon: Icons.settings_suggest_outlined,
+            //     title: "General Settings",
+            //     onTap: () {},
+            //     trailingIcon: Icons.arrow_forward_ios_rounded,
+            //     boxColor: Colors.orange.shade100,
+            //     iconColor: Colors.orange),
+            // const SizedBox(height: 10),
             CustomListTile(
                 leadingIcon: Icons.info_outline_rounded,
                 title: "About Us",
-                onTap: () {},
+                onTap: () {
+                  nextScreen(context, const AboutUsScreen());
+                },
                 trailingIcon: Icons.arrow_forward_ios_rounded,
-                boxColor: Colors.green.shade100,
-                iconColor: Colors.green),
+                boxColor: Colors.orange.shade100,
+                iconColor: Colors.orange),
             const Divider(height: 20),
             CustomListTile(
                 leadingIcon: Icons.logout,
                 title: "Log Out",
                 onTap: () {},
                 trailingIcon: Icons.arrow_forward_ios_rounded,
-                boxColor: Colors.redAccent.shade100,
+                boxColor: Colors.red.shade100,
                 iconColor: Colors.red),
             const SizedBox(height: 10),
           ],
