@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:healthful/Controller/Provider/authentication_provider.dart';
 import 'package:healthful/View/Utils/next_screen.dart';
 import 'package:healthful/View/theme/extention.dart';
 import 'package:healthful/View/theme/light_color.dart';
 import 'package:healthful/View/theme/text_styles.dart';
+import 'package:provider/provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -15,8 +19,10 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 5), () {
-      nextScreenRemoveUntil(context, "/signIn");
+    final authProvider = context.read<AuthProvider>();
+    authProvider.getDataFromSharedPreferences();
+    Timer(const Duration(seconds: 3), () {
+      authProvider.isSignedIn ? nextScreenRemoveUntil(context, "/home") : nextScreenRemoveUntil(context, "/signIn");
     });
   }
 

@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:healthful/Controller/Functions/make_phone_call.dart';
 import 'package:healthful/Controller/Provider/appointment_provider.dart';
-import 'package:healthful/View/Screens/AppScreens/message_screen.dart';
-import 'package:healthful/View/Utils/next_screen.dart';
-import 'package:healthful/View/theme/extention.dart';
 import 'package:healthful/View/theme/light_color.dart';
 import 'package:provider/provider.dart';
 
-class UpcomingAppointments extends StatelessWidget {
-  const UpcomingAppointments({
+class CanceledAppointments extends StatelessWidget {
+  const CanceledAppointments({
     super.key,
   });
 
@@ -40,9 +36,9 @@ class UpcomingAppointments extends StatelessWidget {
                 );
               }
               return ListView.builder(
-                  itemCount: appointmentProvider.upcomingAppointments.length,
+                  itemCount: appointmentProvider.canceledAppointments.length,
                   itemBuilder: (context, index) {
-                    final doctorData = appointmentProvider.upcomingAppointments;
+                    final doctorData = appointmentProvider.canceledAppointments;
                     return Container(
                       margin: const EdgeInsets.symmetric(vertical: 5),
                       decoration: BoxDecoration(
@@ -124,53 +120,12 @@ class UpcomingAppointments extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                const SizedBox(width: 10),
-                                Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: LightColor.grey.withAlpha(150)),
-                                  child: const Icon(
-                                    Icons.call,
-                                    color: Colors.white,
-                                  ),
-                                ).ripple(
-                                  () {
-                                    print('phone number is ${doctorData[index].phone}');
-                                    callNumber(doctorData[index].phone);
-                                  },
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: LightColor.grey.withAlpha(150)),
-                                  child: const Icon(
-                                    Icons.chat_bubble,
-                                    color: Colors.white,
-                                  ),
-                                ).ripple(
-                                  () {
-                                    nextScreen(
-                                        context,
-                                        MessagesScreen(
-                                          doctorId: doctorData[index].doctorId,
-                                          doctorName: doctorData[index].doctorName,
-                                          doctorImage: doctorData[index].photoUrl,
-                                          doctorPhone: doctorData[index].phone,
-                                          appointmentId: doctorData[index].appointmentId,
-                                        ));
-                                  },
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
                                 InkWell(
                                   onTap: () {
                                     appointmentProvider.cancelAppointment(doctorData[index].appointmentId);
                                   },
                                   child: Container(
-                                    width: 100,
+                                    width: 150,
                                     padding: const EdgeInsets.symmetric(vertical: 12),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFF4F6FA),
@@ -201,14 +156,14 @@ class UpcomingAppointments extends StatelessWidget {
                                           '${currentTime.minute.toString().padLeft(2, '0')} '
                                           '${currentTime.period == DayPeriod.am ? 'AM' : 'PM'}';
                                       print("Date $formattedDate Time $formattedTime");
-                                      appointmentProvider.completeTheAppointment(
+                                      appointmentProvider.rescheduleAppointment(
                                           doctorData[index].appointmentId, formattedDate.toString(), formattedTime.toString());
                                     },
                                     child: Container(
-                                      width: 100,
+                                      width: 150,
                                       padding: const EdgeInsets.symmetric(vertical: 12),
                                       decoration: BoxDecoration(
-                                        color: Colors.green,
+                                        color: const Color.fromARGB(255, 133, 41, 41),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Center(
@@ -218,7 +173,7 @@ class UpcomingAppointments extends StatelessWidget {
                                                 size: 30.0,
                                               )
                                             : const Text(
-                                                "Complete",
+                                                "Reschedule",
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w500,

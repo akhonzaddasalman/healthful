@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthful/View/theme/light_color.dart';
 
-ElevatedButton buildRegisterButton(onPressed, title, {TextStyle? textStyle, ButtonStyle? style}) {
+ElevatedButton buildRegisterButton(onPressed, child, {TextStyle? textStyle, ButtonStyle? style}) {
   return ElevatedButton(
     onPressed: onPressed,
     style: style ??
@@ -14,10 +14,7 @@ ElevatedButton buildRegisterButton(onPressed, title, {TextStyle? textStyle, Butt
               ),
             ),
             backgroundColor: MaterialStateProperty.all(LightColor.marron)),
-    child: Text(
-      title,
-      style: textStyle ?? TextStyle(color: Colors.black),
-    ),
+    child: child,
   );
 }
 

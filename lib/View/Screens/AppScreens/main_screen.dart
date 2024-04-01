@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:healthful/Controller/Provider/authentication_provider.dart';
+import 'package:healthful/Controller/Provider/doctor_provider.dart';
 import 'package:healthful/Controller/Provider/home_screen_provider.dart';
-import 'package:healthful/Model/data.dart';
-import 'package:healthful/Model/doctor_model.dart';
 import 'package:healthful/View/Screens/AppScreens/detail_page.dart';
 import 'package:healthful/View/Screens/AppScreens/seeAllCategory_screen.dart';
 import 'package:healthful/View/Utils/next_screen.dart';
@@ -21,15 +21,24 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  late List<DoctorModel> doctorDataList;
+  //late List<DoctorModel> doctorDataList;
   @override
   void initState() {
-    doctorDataList = doctorMapList.map((x) => DoctorModel.fromJson(x)).toList();
+    // doctorDataList = doctorMapList.map((x) => DoctorModel.fromJson(x)).toList();
     super.initState();
+    getData();
+  }
+
+  Future getData() async {
+    final sp = context.read<AuthProvider>();
+    final doctorProvider = context.read<DoctorProvider>();
+    await doctorProvider.fetchDoctors(sp.uid.toString());
+    await sp.getDataFromSharedPreferences();
   }
 
   @override
   Widget build(BuildContext context) {
+    final sp = context.read<AuthProvider>();
     final homeProvider = context.read<HomeScreenProvider>();
     return Scaffold(
       appBar: AppBar(
@@ -39,15 +48,15 @@ class _MainScreenState extends State<MainScreen> {
           onTap: () {
             homeProvider.changeTab(3);
           },
-          child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(13)),
-            child: Container(
-              // height: 40,
-              // width: 40,
-              decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
+          child: Align(
+            alignment: Alignment.center,
+            child: CircleAvatar(
+              backgroundColor: LightColor.marron,
+              radius: 35,
+              child: CircleAvatar(
+                radius: 21,
+                backgroundImage: sp.imageUrl.toString() != "" ? NetworkImage("${sp.imageUrl}") as ImageProvider : const AssetImage("assets/user.png"),
               ),
-              child: Image.asset("assets/user.png", fit: BoxFit.fill),
             ),
           ).p(8),
         ),
@@ -63,61 +72,241 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                _header(),
-                _searchField(),
-                _category(),
-              ],
-            ),
-          ),
-          _doctorsList()
-        ],
-      ),
+      body: Builder(builder: (context) {
+        return Consumer<DoctorProvider>(builder: (context, DoctorProvider doctorProvider, child) {
+          if (doctorProvider.isLoading) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: LightColor.marron,
+              ),
+            );
+          }
+          return CustomScrollView(
+            slivers: <Widget>[
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    _header(sp.name.toString()),
+                    Container(
+                      height: 55,
+                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: const BorderRadius.all(Radius.circular(13)),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: LightColor.grey.withOpacity(.3),
+                            blurRadius: 15,
+                            offset: const Offset(5, 5),
+                          )
+                        ],
+                      ),
+                      child: TextField(
+                        onChanged: (value) {
+                          doctorProvider.searchQuery = value;
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          border: InputBorder.none,
+                          hintText: "Search",
+                          hintStyle: TextStyles.body.subTitleColor,
+                          suffixIcon: SizedBox(
+                              width: 50,
+                              child: const Icon(Icons.search, color: LightColor.marron)
+                                  .alignCenter
+                                  .ripple(() {}, borderRadius: BorderRadius.circular(13))),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              doctorProvider.searchQuery.isEmpty
+                  ? SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          _category(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text("Top Doctors", style: TextStyles.title.bold),
+                              Icon(
+                                Icons.swap_vert_outlined,
+                                color: Theme.of(context).primaryColor,
+                              ).p(12).ripple(() {
+                                doctorProvider.isAscending
+                                    ? doctorProvider.sortDoctorsByNameDescending()
+                                    : doctorProvider.sortDoctorsByNameAscending();
+                              }, borderRadius: const BorderRadius.all(Radius.circular(20))),
+                            ],
+                          ).hP16,
+                          ListView.builder(
+                              itemCount: doctorProvider.doctors.length,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                var doctor = doctorProvider.doctors[index];
+                                return Container(
+                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                    boxShadow: <BoxShadow>[
+                                      BoxShadow(
+                                        offset: const Offset(4, 4),
+                                        blurRadius: 10,
+                                        color: LightColor.grey.withOpacity(.2),
+                                      ),
+                                      BoxShadow(
+                                        offset: const Offset(-3, 0),
+                                        blurRadius: 15,
+                                        color: LightColor.grey.withOpacity(.1),
+                                      )
+                                    ],
+                                  ),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                                    child: ListTile(
+                                      contentPadding: const EdgeInsets.all(0),
+                                      leading: ClipRRect(
+                                        borderRadius: const BorderRadius.all(Radius.circular(13)),
+                                        child: Container(
+                                          height: 55,
+                                          width: 55,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(15),
+                                            color: randomColor(),
+                                          ),
+                                          child: Image.network(
+                                            doctor.image.toString(),
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                      ),
+                                      title: Text(doctor.name.toString(), style: TextStyles.title.bold),
+                                      subtitle: Text(
+                                        doctor.type.toString(),
+                                        style: TextStyles.bodySm.subTitleColor.bold,
+                                      ),
+                                      trailing: Icon(
+                                        Icons.keyboard_arrow_right,
+                                        size: 30,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                  ).ripple(() {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailPage(doctor: doctor),
+                                      ),
+                                    );
+                                  }, borderRadius: const BorderRadius.all(Radius.circular(20))),
+                                );
+                              }),
+                        ],
+                      ),
+                    )
+                  : SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text("Top Doctors", style: TextStyles.title.bold),
+                              Icon(
+                                Icons.swap_vert_outlined,
+                                color: Theme.of(context).primaryColor,
+                              ).p(12).ripple(() {
+                                doctorProvider.isAscending
+                                    ? doctorProvider.sortDoctorsByNameDescending()
+                                    : doctorProvider.sortDoctorsByNameAscending();
+                              }, borderRadius: const BorderRadius.all(Radius.circular(20))),
+                            ],
+                          ).hP16,
+                          ListView.builder(
+                              itemCount: doctorProvider.doctors.length,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                var doctor = doctorProvider.doctors[index];
+                                return Container(
+                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                    boxShadow: <BoxShadow>[
+                                      BoxShadow(
+                                        offset: const Offset(4, 4),
+                                        blurRadius: 10,
+                                        color: LightColor.grey.withOpacity(.2),
+                                      ),
+                                      BoxShadow(
+                                        offset: const Offset(-3, 0),
+                                        blurRadius: 15,
+                                        color: LightColor.grey.withOpacity(.1),
+                                      )
+                                    ],
+                                  ),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                                    child: ListTile(
+                                      contentPadding: const EdgeInsets.all(0),
+                                      leading: ClipRRect(
+                                        borderRadius: const BorderRadius.all(Radius.circular(13)),
+                                        child: Container(
+                                          height: 55,
+                                          width: 55,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(15),
+                                            color: randomColor(),
+                                          ),
+                                          child: Image.network(
+                                            doctor.image.toString(),
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                      ),
+                                      title: Text(doctor.name.toString(), style: TextStyles.title.bold),
+                                      subtitle: Text(
+                                        doctor.type.toString(),
+                                        style: TextStyles.bodySm.subTitleColor.bold,
+                                      ),
+                                      trailing: Icon(
+                                        Icons.keyboard_arrow_right,
+                                        size: 30,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                  ).ripple(() {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailPage(doctor: doctor),
+                                      ),
+                                    );
+                                  }, borderRadius: const BorderRadius.all(Radius.circular(20))),
+                                );
+                              }),
+                        ],
+                      ),
+                    )
+            ],
+          );
+        });
+      }),
     );
   }
 
-  Widget _header() {
+  Widget _header(String name) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text("Hello,", style: TextStyles.title.subTitleColor),
-        Text("SKA Tech", style: TextStyles.h1Style),
+        Text(name, style: TextStyles.h1Style),
       ],
     ).p16;
-  }
-
-  Widget _searchField() {
-    return Container(
-      height: 55,
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.all(Radius.circular(13)),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: LightColor.grey.withOpacity(.3),
-            blurRadius: 15,
-            offset: const Offset(5, 5),
-          )
-        ],
-      ),
-      child: TextField(
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          border: InputBorder.none,
-          hintText: "Search",
-          hintStyle: TextStyles.body.subTitleColor,
-          suffixIcon: SizedBox(
-              width: 50,
-              child: const Icon(Icons.search, color: LightColor.marron).alignCenter.ripple(() {}, borderRadius: BorderRadius.circular(13))),
-        ),
-      ),
-    );
   }
 
   Widget _category() {
@@ -141,15 +330,18 @@ class _MainScreenState extends State<MainScreen> {
         SizedBox(
           height: AppTheme.fullHeight(context) * .28,
           width: AppTheme.fullWidth(context),
-          child: ListView(
+          child: ListView.builder(
+            itemCount: doctorCategories.length,
+            physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
-            children: <Widget>[
-              _categoryCard("Chemist & Drugist", "350 + Stores", color: LightColor.green, lightColor: LightColor.lightGreen),
-              _categoryCard("Covid - 19 Specialist", "899 Doctors", color: LightColor.skyBlue, lightColor: LightColor.lightBlue),
-              _categoryCard("Cardiologists Specialist", "500 + Doctors", color: LightColor.orange, lightColor: LightColor.lightOrange),
-              _categoryCard("Dermatologist", "300 + Doctors", color: LightColor.green, lightColor: LightColor.lightGreen),
-              _categoryCard("General Surgeon", "500 + Doctors", color: LightColor.skyBlue, lightColor: LightColor.lightBlue)
-            ],
+            itemBuilder: (BuildContext context, int index) {
+              final Random random = Random();
+              final List<Color> colors = cardRandomColor();
+              final Color lightColor = colors[0];
+              final Color darkColor = colors[1];
+              final int value = random.nextInt(150) + 10;
+              return _categoryCard(doctorCategories[index].toString(), "$value + Stores", color: darkColor, lightColor: lightColor);
+            },
           ),
         ),
       ],
@@ -202,6 +394,7 @@ class _MainScreenState extends State<MainScreen> {
                     const SizedBox(height: 10),
                     Flexible(
                       child: Text(
+                        overflow: TextOverflow.ellipsis,
                         subtitle,
                         style: subtitleStyle,
                       ).hP8,
@@ -213,115 +406,6 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ).ripple(() {}, borderRadius: const BorderRadius.all(Radius.circular(20))),
       ),
-    );
-  }
-
-  Widget _doctorsList() {
-    return SliverList(
-      delegate: SliverChildListDelegate(
-        [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text("Top Doctors", style: TextStyles.title.bold),
-              IconButton(
-                  icon: Icon(
-                    Icons.sort,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  onPressed: () {
-                    _sortDoctors();
-                  })
-              // .p(12).ripple(() {}, borderRadius: BorderRadius.all(Radius.circular(20))),
-            ],
-          ).hP16,
-          getdoctorWidgetList()
-        ],
-      ),
-    );
-  }
-
-  bool _sortByName = false;
-
-  void _sortDoctors() {
-    setState(() {
-      if (_sortByName) {
-        doctorDataList.sort((a, b) => a.name.compareTo(b.name));
-      } else {
-        doctorDataList.sort((a, b) => a.type.compareTo(b.type));
-      }
-      _sortByName = !_sortByName;
-    });
-  }
-
-  Widget getdoctorWidgetList() {
-    return Column(
-        children: doctorDataList.map((x) {
-      return _doctorTile(x);
-    }).toList());
-  }
-
-  Widget _doctorTile(DoctorModel model) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            offset: const Offset(4, 4),
-            blurRadius: 10,
-            color: LightColor.grey.withOpacity(.2),
-          ),
-          BoxShadow(
-            offset: const Offset(-3, 0),
-            blurRadius: 15,
-            color: LightColor.grey.withOpacity(.1),
-          )
-        ],
-      ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-        child: ListTile(
-          contentPadding: const EdgeInsets.all(0),
-          leading: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(13)),
-            child: Container(
-              height: 55,
-              width: 55,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: randomColor(),
-              ),
-              child: Image.asset(
-                model.image,
-                height: 50,
-                width: 50,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          title: Text(model.name, style: TextStyles.title.bold),
-          subtitle: Text(
-            model.type,
-            style: TextStyles.bodySm.subTitleColor.bold,
-          ),
-          trailing: Icon(
-            Icons.keyboard_arrow_right,
-            size: 30,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
-      ).ripple(() {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailPage(
-              model: model,
-            ),
-          ),
-        );
-      }, borderRadius: const BorderRadius.all(Radius.circular(20))),
     );
   }
 
@@ -343,4 +427,71 @@ class _MainScreenState extends State<MainScreen> {
     var color = colorList[random.nextInt(colorList.length)];
     return color;
   }
+
+  List<Color> cardRandomColor() {
+    var random = Random();
+    final List<List<Color>> colorList = [
+      [LightColor.lightGreen, LightColor.green],
+      [LightColor.lightBlue, LightColor.skyBlue],
+      [LightColor.lightOrange, LightColor.orange],
+      [LightColor.lightGreen, LightColor.green],
+      [LightColor.lightBlue, LightColor.skyBlue],
+    ];
+
+    var color = colorList[random.nextInt(colorList.length)];
+    return color;
+  }
+
+  List<String> doctorCategories = [
+    'Allergist',
+    'Anesthesiologist',
+    'Cardiologist',
+    'Dermatologist',
+    'Endocrinologist',
+    'Gastroenterologist',
+    'Hematologist',
+    'Infectious Disease Specialist',
+    'Internist',
+    'Neonatologist',
+    'Nephrologist',
+    'Neurologist',
+    'Obstetrician/Gynecologist',
+    'Oncologist',
+    'Ophthalmologist',
+    'Orthopedic Surgeon',
+    'Otolaryngologist (ENT Specialist)',
+    'Pediatrician',
+    'Plastic Surgeon',
+    'Psychiatrist',
+    'Pulmonologist',
+    'Radiologist',
+    'Rheumatologist',
+    'Surgeon',
+    'Urologist',
+    'Cardiac Electrophysiologist',
+    'Cardiac Surgeon',
+    'Colorectal Surgeon',
+    'Critical Care Specialist',
+    'Emergency Medicine Physician',
+    'Family Medicine Physician',
+    'Geriatrician',
+    'Gynecologic Oncologist',
+    'Hand Surgeon',
+    'Hepatologist',
+    'Interventional Cardiologist',
+    'Interventional Radiologist',
+    'Medical Geneticist',
+    'Nephrology Nurse',
+    'Neurosurgeon',
+    'Nurse Anesthetist',
+    'Nurse Midwife',
+    'Nurse Practitioner',
+    'Obstetric Nurse',
+    'Occupational Medicine Physician',
+    'Oncology Nurse',
+    'Ophthalmic Technician',
+    'Oral and Maxillofacial Surgeon',
+    'Orthodontist',
+    'Orthopedic Nurse',
+  ];
 }

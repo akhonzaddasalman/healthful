@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:healthful/Controller/Provider/appointment_provider.dart';
+import 'package:healthful/Controller/Provider/authentication_provider.dart';
 import 'package:healthful/View/theme/light_color.dart';
+import 'package:healthful/View/widgets/canceled_schedule.dart';
+import 'package:healthful/View/widgets/completed_appointments.dart';
 import 'package:healthful/View/widgets/upcoming_schedule.dart';
+import 'package:provider/provider.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
@@ -12,15 +17,30 @@ class ScheduleScreen extends StatefulWidget {
 class _ScheduleScreenState extends State<ScheduleScreen> {
   int _buttonIndex = 0;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
+  Future getData() async {
+    final sp = context.read<AuthProvider>();
+    final appointmentProvider = context.read<AppointmentProvider>();
+    appointmentProvider.fetchUpcomingAppointments(sp.uid.toString());
+    appointmentProvider.fetchCanceledAppointments(sp.uid.toString());
+    appointmentProvider.fetchCompletedAppointments(sp.uid.toString());
+  }
+
   final _scheduleWidgets = [
     // Upcoming Widget
-    UpcomingSchedule(),
+    const UpcomingAppointments(),
 
     // Completed Widget
-    Container(),
+    const CompletedAppointments(),
 
     // Canceled Widget
-    Container(),
+    const CanceledAppointments(),
   ];
   List<String> scheduleName = [
     'Upcoming',

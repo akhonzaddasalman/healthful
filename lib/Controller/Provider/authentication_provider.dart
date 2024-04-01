@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -48,8 +48,14 @@ class AuthProvider extends ChangeNotifier {
   String? _phone;
   String? get phone => _phone;
 
-  // String? _password;
-  // String? get password => _password;
+  String? _category;
+  String? get category => _category;
+
+  String? _type;
+  String? get type => _type;
+
+  String? _about;
+  String? get about => _about;
 
   String? _imageUrl;
   String? get imageUrl => _imageUrl;
@@ -75,13 +81,6 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String generateRandomId(int length) {
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    final random = Random();
-    final idList = List.generate(length, (index) => chars[random.nextInt(chars.length)]);
-    return idList.join();
-  }
-
   //SignUp
   Future signUpWithEmailPassword(
     BuildContext context,
@@ -100,6 +99,9 @@ class AuthProvider extends ChangeNotifier {
       _email = email;
       _phone = phone;
       _uid = value.user!.uid;
+      _type = "";
+      _category = "";
+      _about = "";
       //_password = password;
     });
 
@@ -118,7 +120,7 @@ class AuthProvider extends ChangeNotifier {
         final QuerySnapshot<Map<String, dynamic>> result =
             await FirebaseFirestore.instance.collection('users').where("uid", isEqualTo: value.user!.uid).get();
 
-        print("This is document Data1 == ${result.docs[0]['password']}");
+        //print("This is document Data1 == ${result.docs[0]['password']}");
         if (result.docs.isNotEmpty) {
           final userDoc = result.docs[0];
           if (userDoc['uid'] == value.user!.uid) {
@@ -127,6 +129,9 @@ class AuthProvider extends ChangeNotifier {
             _phone = userDoc['phone'];
             _email = userDoc['email'];
             _imageUrl = userDoc['image_url'];
+            _type = userDoc['type'];
+            _category = userDoc['category'];
+            _about = userDoc['about'];
 
             // Clear any previous error
             _hasError = false;
@@ -176,7 +181,9 @@ class AuthProvider extends ChangeNotifier {
           _email = snapshot['email'],
           _imageUrl = snapshot['image_url'],
           _phone = snapshot['phone'],
-          //_password = snapshot['password'],
+          _type = snapshot['type'],
+          _category = snapshot['category'],
+          _about = snapshot['about'],
         });
   }
 
@@ -189,6 +196,9 @@ class AuthProvider extends ChangeNotifier {
       "uid": _uid,
       "image_url": _imageUrl,
       "phone": _phone,
+      "type": _type,
+      "category": _category,
+      "about": _about,
       //"password": _password,
     });
     notifyListeners();
@@ -202,6 +212,9 @@ class AuthProvider extends ChangeNotifier {
     await s.setString('uid', _uid!);
     await s.setString('image_url', _imageUrl!);
     await s.setString('phone', _phone!);
+    await s.setString('type', _type!);
+    await s.setString('category', _category!);
+    await s.setString('about', _about!);
     notifyListeners();
   }
 
@@ -213,6 +226,9 @@ class AuthProvider extends ChangeNotifier {
     _imageUrl = s.getString('image_url');
     _uid = s.getString('uid');
     _phone = s.getString('phone');
+    _type = s.getString('type');
+    _category = s.getString('category');
+    _about = s.getString('about');
     notifyListeners();
   }
 
@@ -228,13 +244,17 @@ class AuthProvider extends ChangeNotifier {
 
   // signout
   Future userSignOut() async {
+    setLoading(true);
+
     await firebaseAuth.signOut;
     await googleSignIn.signOut();
 
     _isSignedIn = false;
-    notifyListeners();
+
     // clear all storage information
     clearStoredData();
+    setLoading(false);
+    notifyListeners();
   }
 
   // clear data from sharedpref

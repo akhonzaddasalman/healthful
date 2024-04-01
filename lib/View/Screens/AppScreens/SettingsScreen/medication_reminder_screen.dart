@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:healthful/Controller/Provider/authentication_provider.dart';
+import 'package:healthful/Controller/Provider/medication_provider.dart';
+import 'package:healthful/Model/medication_model.dart';
 import 'package:healthful/View/Components/build_buttons.dart';
 import 'package:healthful/View/theme/extention.dart';
 import 'package:healthful/View/theme/light_color.dart';
 import 'package:healthful/View/theme/text_styles.dart';
 import 'package:healthful/View/widgets/text_field.dart';
+import 'package:provider/provider.dart';
 
 class MedicationReminderPage extends StatefulWidget {
   const MedicationReminderPage({super.key});
@@ -14,60 +19,56 @@ class MedicationReminderPage extends StatefulWidget {
 }
 
 class _MedicationReminderPageState extends State<MedicationReminderPage> {
-  List<Medication> medications = [
-    Medication(name: 'Aspirin', dosage: '100mg'),
-    Medication(name: 'Lipitor', dosage: '20mg'),
-    Medication(name: 'Metformin', dosage: '500mg'),
-    Medication(name: 'Synthroid', dosage: '50mcg'),
-    Medication(name: 'Lasix', dosage: '40mg'),
-    Medication(name: 'Amoxicillin', dosage: '250mg'),
-    Medication(name: 'Ventolin', dosage: '100mcg'),
-    Medication(name: 'Zyrtec', dosage: '10mg'),
-    Medication(name: 'Prozac', dosage: '20mg'),
-    Medication(name: 'Norvasc', dosage: '5mg'),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final sp = context.read<AuthProvider>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Medication Reminders'),
       ),
-      body: medications.isEmpty
-          ? Center(
+      body: StreamBuilder<List<Medication>>(
+        stream: Provider.of<MedicationProvider>(context).getMedicationsStream(sp.uid.toString()),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.medical_information,
                     size: 140,
                     color: LightColor.marron,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   Text("No medications added yet.", style: TextStyles.title.bold),
                 ],
               ),
-            )
-          : ListView.builder(
-              itemCount: medications.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(medications[index].name),
-                  subtitle: Text('Dosage: ${medications[index].dosage}'),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      setState(() {
-                        medications.removeAt(index);
-                      });
-                    },
-                  ),
-                );
-              },
-            ),
+            );
+          }
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              final medication = snapshot.data![index];
+              return ListTile(
+                title: Text(medication.name),
+                subtitle: Text('Dosage: ${medication.dosage}'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    Provider.of<MedicationProvider>(context, listen: false).removeMedication(medication.id);
+                  },
+                ),
+              );
+            },
+          );
+        },
+      ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(8.0),
         child: FloatingActionButton(
@@ -83,6 +84,7 @@ class _MedicationReminderPageState extends State<MedicationReminderPage> {
   }
 
   Future<void> _showAddMedicationDialog(BuildContext context) async {
+    final sp = context.read<AuthProvider>();
     TextEditingController nameController = TextEditingController();
     TextEditingController dosageController = TextEditingController();
 
@@ -101,7 +103,7 @@ class _MedicationReminderPageState extends State<MedicationReminderPage> {
                   color: LightColor.marron,
                   borderColor: LightColor.marron,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 RoundedTextField(
@@ -116,28 +118,26 @@ class _MedicationReminderPageState extends State<MedicationReminderPage> {
           actions: <Widget>[
             buildRegisterButton(() {
               Navigator.of(context).pop();
-            }, 'Cancel', textStyle: GoogleFonts.poppins(color: LightColor.white)),
-            buildRegisterButton(() {
-              setState(() {
-                medications.add(
-                  Medication(
-                    name: nameController.text,
-                    dosage: dosageController.text,
-                  ),
-                );
-              });
-              Navigator.of(context).pop();
-            }, 'Add', textStyle: GoogleFonts.poppins(color: LightColor.white)),
+            }, Text('Cancel', style: GoogleFonts.poppins(color: LightColor.white))),
+            Consumer<MedicationProvider>(builder: (context, MedicationProvider medicationProvider, child) {
+              return buildRegisterButton(() {
+                final name = nameController.text.trim();
+                final dosage = dosageController.text.trim();
+                if (name.isNotEmpty && dosage.isNotEmpty) {
+                  medicationProvider.addMedication(sp.uid.toString(), name, dosage);
+                  Navigator.of(context).pop();
+                }
+              },
+                  medicationProvider.isLoading
+                      ? const SpinKitThreeBounce(
+                          color: LightColor.white,
+                          size: 30.0,
+                        )
+                      : Text('Add', style: GoogleFonts.poppins(color: LightColor.white)));
+            }),
           ],
         );
       },
     );
   }
-}
-
-class Medication {
-  final String name;
-  final String dosage;
-
-  Medication({required this.name, required this.dosage});
 }

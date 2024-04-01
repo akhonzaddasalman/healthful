@@ -5,14 +5,15 @@ import 'package:healthful/View/theme/light_color.dart';
 import 'package:healthful/View/theme/theme.dart';
 
 class ProgressWidget extends StatefulWidget {
-  const ProgressWidget(
-      {super.key,
-      required this.value,
-      this.totalValue = 100,
-      required this.activeColor,
-      required this.backgroundColor,
-      required this.title,
-      this.durationTime});
+  const ProgressWidget({
+    super.key,
+    required this.value,
+    this.totalValue = 100,
+    required this.activeColor,
+    required this.backgroundColor,
+    required this.title,
+    this.durationTime,
+  });
   final double totalValue;
   final double value;
   final Color activeColor;

@@ -15,6 +15,7 @@ class RoundedTextField extends StatelessWidget {
   final Widget? sIcon;
   final Widget? pIcon;
   final bool? onlyRead;
+  final int? maxLine;
 
   const RoundedTextField({
     super.key,
@@ -30,6 +31,7 @@ class RoundedTextField extends StatelessWidget {
     this.sIcon,
     this.onlyRead,
     this.obscureText,
+    this.maxLine,
   });
 
   @override
@@ -40,6 +42,7 @@ class RoundedTextField extends StatelessWidget {
       focusNode: focusNode,
       controller: controller,
       cursorColor: cursorColor ?? LightColor.marron,
+      maxLines: maxLine ?? 1,
       decoration: inputDecoration ??
           InputDecoration(
             labelText: hint,
