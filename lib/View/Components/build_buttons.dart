@@ -8,12 +8,12 @@ ElevatedButton buildRegisterButton(onPressed, child, {TextStyle? textStyle, Butt
     onPressed: onPressed,
     style: style ??
         ButtonStyle(
-            shape: MaterialStateProperty.all(
+            shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            backgroundColor: MaterialStateProperty.all(LightColor.marron)),
+            backgroundColor: WidgetStateProperty.all(LightColor.marron)),
     child: child,
   );
 }

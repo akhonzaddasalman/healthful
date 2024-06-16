@@ -48,11 +48,11 @@ class DoctorProvider with ChangeNotifier {
                 type: doc['type'],
                 category: doc['category'],
                 about: doc['about'],
-                goodReviews: double.parse(doc['goodReviews']),
-                image: doc['image_url'],
-                totalReviews: doc['totalReviews'],
-                averageRating: double.parse(doc['averageRating']),
-              ))
+        goodReviews: (doc.data() as Map<String,dynamic>).containsKey('goodReviews') && doc['goodReviews'] != null ? double.parse(doc['goodReviews']) : 0.0,
+        image: doc['image_url'],
+        totalReviews: (doc.data() as Map<String,dynamic>).containsKey('totalReviews') && doc['totalReviews'] != null ? doc['totalReviews'] : 0,
+        averageRating: (doc.data() as Map<String,dynamic>).containsKey('averageRating') && doc['averageRating'] != null ? double.parse(doc['averageRating']) : 0.0,
+      ))
           .toList();
       print(doctors);
       notifyListeners();

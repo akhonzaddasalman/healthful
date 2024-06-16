@@ -184,7 +184,7 @@ class _MainScreenState extends State<MainScreen> {
                                           ),
                                         ),
                                       ),
-                                      title: Text(doctor.name.toString(), style: TextStyles.title.bold),
+                                      title: Text(doctor.name.toString(), style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600)),
                                       subtitle: Text(
                                         doctor.type.toString(),
                                         style: TextStyles.bodySm.subTitleColor.bold,

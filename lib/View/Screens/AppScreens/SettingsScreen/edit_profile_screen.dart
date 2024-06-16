@@ -178,7 +178,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     items: <String>['Select Type', 'doctor', 'patient'].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
-                        child: Text(value),
+                        child: Text(value,style: TextStyle(fontSize: 14),),
                       );
                     }).toList(),
                   ),
@@ -212,7 +212,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     items: doctorCategories.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
-                        child: Text(value),
+                        child: Text(value,style: TextStyle(fontSize: 14),),
                       );
                     }).toList(),
                   ),

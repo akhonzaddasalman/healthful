@@ -46,7 +46,7 @@ Future handleSignUp(
           // user exists
           openSnackBar(context, "Please SignIn Already Have Account", LightColor.danger);
           Future.delayed(const Duration(milliseconds: 500)).then((value) {
-            nextScreenRemoveUntil(context, '/signIn');
+            nextScreenRemoveUntil(context, '/questionnaire');
           });
         } else {
           // user does not exist
@@ -54,7 +54,8 @@ Future handleSignUp(
           sp.setLoading(false);
           openSnackBar(context, "You Have Register Successfully! Please SignIn", Colors.green);
           Future.delayed(const Duration(milliseconds: 500)).then((value) {
-            nextScreenRemoveUntil(context, '/signIn');
+            nextScreenRemoveUntil(context, '/questionnaire');
+
           });
         }
       }

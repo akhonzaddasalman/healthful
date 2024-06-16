@@ -1,5 +1,6 @@
 // symptom_provider.dart
 import 'package:flutter/material.dart';
+import 'package:healthful/Controller/Services/symptoms_service.dart';
 
 import '../../Model/symptoms_model.dart';
 
@@ -157,4 +158,29 @@ class SymptomProvider extends ChangeNotifier {
   //     print('Error fetching symptoms: $e');
   //   }
   // }
+}
+
+
+
+class SymptomCheckerProvider with ChangeNotifier {
+  SymptomCheckerService _service = SymptomCheckerService();
+  bool _loading = false;
+  Map<String, dynamic>? _diagnosis;
+
+  bool get loading => _loading;
+  Map<String, dynamic>? get diagnosis => _diagnosis;
+
+  Future<void> checkSymptoms(List<Map<String, dynamic>> symptoms) async {
+    _loading = true;
+    notifyListeners();
+
+    try {
+      _diagnosis = await _service.getDiagnosis(symptoms);
+    } catch (e) {
+      _diagnosis = {'error': e.toString()};
+    }
+
+    _loading = false;
+    notifyListeners();
+  }
 }
